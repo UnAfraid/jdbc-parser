@@ -1,0 +1,41 @@
+env:
+  - GO111MODULE=on
+  - GOPROXY=https://gocenter.io
+project_name: jdbc-parser
+release:
+  github:
+    owner: UnAfraid
+    name: jdbc-parser
+  name_template: '{{.Tag}}'
+builds:
+  - id: release
+    ldflags: -s -w -extldflags "-static"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+    goarch:
+      - amd64
+checksum:
+  name_template: '{{ .ProjectName }}_checksums.txt'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - Merge pull request
+      - Merge branch
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    builds:
+      - release
+    replacements:
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
